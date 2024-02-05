@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Rolisa.DataModel\Rolisa.DataModel.csproj" />
+    <ProjectReference Include="..\Rolisa.ViewModel\Rolisa.ViewModel.csproj" />
+  </ItemGroup>
+
 </Project>
