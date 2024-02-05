@@ -37,6 +37,7 @@ namespace Rolisa.DataModel
         public virtual DbSet<Position> Positions { get; set; } = null!;
         public virtual DbSet<Product> Products { get; set; } = null!;
         public virtual DbSet<ProductCategory> ProductCategories { get; set; } = null!;
+        public virtual DbSet<Rating> Ratings { get; set; } = null!;
         public virtual DbSet<ResetPassword> ResetPasswords { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<Salary> Salaries { get; set; } = null!;
@@ -206,6 +207,13 @@ namespace Rolisa.DataModel
             });
 
             modelBuilder.Entity<ProductCategory>(entity =>
+            {
+                entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.IsDeleted).HasDefaultValueSql("((0))");
+            });
+
+            modelBuilder.Entity<Rating>(entity =>
             {
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
