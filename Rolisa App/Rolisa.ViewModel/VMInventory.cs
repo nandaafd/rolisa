@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Rolisa.ViewModel
 {
@@ -13,8 +14,11 @@ namespace Rolisa.ViewModel
         public int Id { get; set; }
         public string? Name { get; set; }
         public int? InventoryCategoryId { get; set; }
+        public string? InventoryCategoryName { get; set; }
         public int? ConditionId { get; set; }
+        public string? ConditionName { get; set; }
         public int? Qty { get; set; }
+        public IFormFile? image { get; set; }
         public string? ImagePath { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
