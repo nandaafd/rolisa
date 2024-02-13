@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Rolisa.ViewModel
 {
@@ -16,6 +17,7 @@ namespace Rolisa.ViewModel
         public string? Writer { get; set; }
         public string? Text { get; set; }
         public string? ImagePath { get; set; }
+        public IFormFile? ImageFile { get; set; }
         public int CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public int? ModifiedBy { get; set; }

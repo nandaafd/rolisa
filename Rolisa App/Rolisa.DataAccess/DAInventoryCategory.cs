@@ -138,23 +138,32 @@ namespace Rolisa.DataAccess
                 VMInventoryCategory existingData = (VMInventoryCategory)dataResponse;
                 try
                 {
-                    InventoryCategory category = new InventoryCategory()
+                    if (existingData != null)
                     {
-                        Id = existingData.Id,
-                        Name = data.Name,
-                        CreatedBy = existingData.CreatedBy,
-                        CreatedOn = existingData.CreatedOn,
-                        ModifiedBy = data.ModifiedBy,
-                        ModifiedOn = DateTime.Now,
-                        IsDeleted = false
-                    };
-                    db.Update(category);
-                    db.SaveChanges();
-                    dbTran.Commit();
+                        InventoryCategory category = new InventoryCategory()
+                        {
+                            Id = existingData.Id,
+                            Name = data.Name,
+                            CreatedBy = existingData.CreatedBy,
+                            CreatedOn = existingData.CreatedOn,
+                            ModifiedBy = data.ModifiedBy,
+                            ModifiedOn = DateTime.Now,
+                            IsDeleted = false
+                        };
+                        db.Update(category);
+                        db.SaveChanges();
+                        dbTran.Commit();
 
-                    response.statusCode = System.Net.HttpStatusCode.OK;
-                    response.message = "success update data inventory category";
-                    response.data = category;
+                        response.statusCode = System.Net.HttpStatusCode.OK;
+                        response.message = "success update data inventory category";
+                        response.data = category;
+                    }
+                    else
+                    {
+                        response.statusCode = System.Net.HttpStatusCode.NoContent;
+                        response.message = "cannot update data inventory category, data not found";
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -175,25 +184,33 @@ namespace Rolisa.DataAccess
                 VMInventoryCategory existingData = (VMInventoryCategory)dataResponse;
                 try
                 {
-                    InventoryCategory category = new InventoryCategory()
+                    if (existingData != null)
                     {
-                        Id = existingData.Id,
-                        Name = existingData.Name,
-                        CreatedBy = existingData.CreatedBy,
-                        CreatedOn = existingData.CreatedOn,
-                        ModifiedBy = existingData.ModifiedBy,
-                        ModifiedOn = existingData.ModifiedOn,
-                        DeletedBy = userId,
-                        DeletedOn = DateTime.Now,
-                        IsDeleted = true
-                    };
-                    db.Update(category);
-                    db.SaveChanges();
-                    dbTran.Commit();
+                        InventoryCategory category = new InventoryCategory()
+                        {
+                            Id = existingData.Id,
+                            Name = existingData.Name,
+                            CreatedBy = existingData.CreatedBy,
+                            CreatedOn = existingData.CreatedOn,
+                            ModifiedBy = existingData.ModifiedBy,
+                            ModifiedOn = existingData.ModifiedOn,
+                            DeletedBy = userId,
+                            DeletedOn = DateTime.Now,
+                            IsDeleted = true
+                        };
+                        db.Update(category);
+                        db.SaveChanges();
+                        dbTran.Commit();
 
-                    response.statusCode = System.Net.HttpStatusCode.OK;
-                    response.message = "success delete data inventory category";
-                    response.data = category;
+                        response.statusCode = System.Net.HttpStatusCode.OK;
+                        response.message = "success delete data inventory category";
+                        response.data = category;
+                    }
+                    else
+                    {
+                        response.statusCode = System.Net.HttpStatusCode.NoContent;
+                        response.message = "cannot delete data inventory category, data not found";
+                    }
                 }
                 catch (Exception ex)
                 {

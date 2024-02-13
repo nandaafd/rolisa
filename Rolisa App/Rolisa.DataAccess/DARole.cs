@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Rolisa.DataAccess
 {
-    public class DACondition
+    public class DARole
     {
-        private readonly RolisaContext db;
         private VMResponse response = new VMResponse();
-        public DACondition(RolisaContext _db)
+        private readonly RolisaContext db;
+        public DARole(RolisaContext _db)
         {
             db = _db;
         }
@@ -21,34 +21,35 @@ namespace Rolisa.DataAccess
         {
             try
             {
-                List<VMCondition> data = (
-                    from ic in db.Conditions
-                    where ic.IsDeleted == false && ic.Name.Contains(filter ?? "")
-                    select new VMCondition
+                List<VMRole>? role = (
+                    from r in db.Roles
+                    where r.IsDeleted == false && r.Name.Contains(filter ?? "")
+                    select new VMRole
                     {
-                        Id = ic.Id,
-                        Name = ic.Name,
-                        CreatedBy = ic.CreatedBy,
-                        CreatedOn = ic.CreatedOn,
-                        ModifiedBy = ic.ModifiedBy,
-                        ModifiedOn = ic.ModifiedOn,
-                        DeletedBy = ic.DeletedBy,
-                        DeletedOn = ic.DeletedOn,
-                        IsDeleted = ic.IsDeleted
+                        Id = r.Id,
+                        Name = r.Name,
+                        CreatedBy = r.CreatedBy,
+                        CreatedOn = r.CreatedOn,
+                        ModifiedBy = r.ModifiedBy,
+                        ModifiedOn = r.ModifiedOn,
+                        DeletedBy = r.DeletedBy,
+                        DeletedOn = r.DeletedOn,
+                        IsDeleted = r.IsDeleted
                     }
                 ).ToList();
                 if (filter != null)
                 {
-                    response.statusCode = (data.Count > 0) ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.NoContent;
-                    response.message = (data.Count > 0) ? $"success fetched {data.Count} data condition" : "inventory condition has no data!";
-                    response.data = data;
+                    response.statusCode = (role.Count > 0) ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.NoContent;
+                    response.message = (role.Count > 0) ? $"success fetched {role.Count} data product category" : "product category has no data!";
+                    response.data = role;
                 }
                 else
                 {
-                    throw new ArgumentNullException();
+                    response.statusCode = System.Net.HttpStatusCode.NoContent;
+                    response.message = "please input filter first!";
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 response.message = ex.Message;
                 response.statusCode = System.Net.HttpStatusCode.BadRequest;
@@ -56,32 +57,32 @@ namespace Rolisa.DataAccess
             return response;
         }
         public VMResponse GetAll() => GetByFilter("");
-
         public VMResponse GetById(int id)
         {
             try
             {
-                VMCondition? data = (
-                    from ic in db.Conditions
-                    where ic.Id == id && ic.IsDeleted == false
-                    select new VMCondition
-                    {
-                        Id = ic.Id,
-                        Name = ic.Name,
-                        CreatedBy = ic.CreatedBy,
-                        CreatedOn = ic.CreatedOn,
-                        ModifiedBy = ic.ModifiedBy,
-                        ModifiedOn = ic.ModifiedOn,
-                        DeletedBy = ic.DeletedBy,
-                        DeletedOn = ic.DeletedOn,
-                        IsDeleted = ic.IsDeleted
+                VMRole? role = (
+                    from r in db.Roles
+                    where r.IsDeleted == false && r.Id == id
+                    select new VMRole 
+                    { 
+                        Id = r.Id,
+                        Name = r.Name,
+                        CreatedBy = r.CreatedBy,
+                        CreatedOn = r.CreatedOn,
+                        ModifiedBy = r.ModifiedBy,
+                        ModifiedOn = r.ModifiedOn,
+                        DeletedBy = r.DeletedBy,
+                        DeletedOn = r.DeletedOn,
+                        IsDeleted = r.IsDeleted
                     }
                 ).FirstOrDefault();
-                if (data != null)
+
+                if (role != null)
                 {
                     response.statusCode = System.Net.HttpStatusCode.OK;
                     response.message = "success get data by id" + id;
-                    response.data = data;
+                    response.data = role;
                 }
                 else
                 {
@@ -96,26 +97,26 @@ namespace Rolisa.DataAccess
             }
             return response;
         }
-
-        public VMResponse Create(VMCondition data)
+        public VMResponse Create(VMRole data)
         {
             using (IDbContextTransaction dbTran = db.Database.BeginTransaction())
             {
                 try
                 {
-                    Condition condition = new Condition()
+                    Role role = new Role()
                     {
                         Name = data.Name,
                         CreatedBy = data.CreatedBy,
+                        CreatedOn = DateTime.Now,
                         IsDeleted = false
                     };
-                    db.Add(condition);
+                    db.Add(role);
                     db.SaveChanges();
                     dbTran.Commit();
 
                     response.statusCode = System.Net.HttpStatusCode.Created;
-                    response.message = "success create data inventory category";
-                    response.data = condition;
+                    response.message = "success create data role";
+                    response.data = role;
                 }
                 catch (Exception ex)
                 {
@@ -126,19 +127,18 @@ namespace Rolisa.DataAccess
             }
             return response;
         }
-
-        public VMResponse Update(VMCondition data)
+        public VMResponse Update(VMRole data)
         {
             using (IDbContextTransaction dbTran = db.Database.BeginTransaction())
             {
                 VMResponse response = GetById(data.Id);
                 object? dataResponse = response.data;
-                VMCondition existingData = (VMCondition)dataResponse;
+                VMRole existingData = (VMRole)dataResponse;
                 try
                 {
                     if (existingData != null)
                     {
-                        Condition condition = new Condition()
+                        Role role = new Role()
                         {
                             Id = existingData.Id,
                             Name = data.Name,
@@ -148,19 +148,20 @@ namespace Rolisa.DataAccess
                             ModifiedOn = DateTime.Now,
                             IsDeleted = false
                         };
-                        db.Update(condition);
+                        db.Update(role);
                         db.SaveChanges();
                         dbTran.Commit();
 
                         response.statusCode = System.Net.HttpStatusCode.OK;
-                        response.message = "success update data inventory condition";
-                        response.data = condition;
+                        response.message = "success update data inventory category";
+                        response.data = role;
                     }
                     else
                     {
                         response.statusCode = System.Net.HttpStatusCode.NoContent;
-                        response.message = "cannot update data inventory condition, data not found";
+                        response.message = "cannot update data inventory category, data not found";
                     }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -171,19 +172,18 @@ namespace Rolisa.DataAccess
             }
             return response;
         }
-
         public VMResponse Delete(int id, int userId)
         {
             using (IDbContextTransaction dbTran = db.Database.BeginTransaction())
             {
                 VMResponse response = GetById(id);
                 object? dataResponse = response.data;
-                VMCondition existingData = (VMCondition)dataResponse;
+                VMRole existingData = (VMRole)dataResponse;
                 try
                 {
                     if (existingData != null)
                     {
-                        Condition condition = new Condition()
+                        Role role = new Role()
                         {
                             Id = existingData.Id,
                             Name = existingData.Name,
@@ -195,18 +195,18 @@ namespace Rolisa.DataAccess
                             DeletedOn = DateTime.Now,
                             IsDeleted = true
                         };
-                        db.Update(condition);
+                        db.Update(role);
                         db.SaveChanges();
                         dbTran.Commit();
 
                         response.statusCode = System.Net.HttpStatusCode.OK;
-                        response.message = "success delete data inventory condition";
-                        response.data = condition;
+                        response.message = "success delete data role";
+                        response.data = role;
                     }
                     else
                     {
                         response.statusCode = System.Net.HttpStatusCode.NoContent;
-                        response.message = "cannot delete data inventory condition, data not found";
+                        response.message = "cannot delete data role, data not found";
                     }
                 }
                 catch (Exception ex)

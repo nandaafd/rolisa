@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Rolisa.DataAccess
 {
-    public class DACondition
+    public class DAProductCategory
     {
-        private readonly RolisaContext db;
         private VMResponse response = new VMResponse();
-        public DACondition(RolisaContext _db)
+        private readonly RolisaContext db;
+        public DAProductCategory(RolisaContext _db)
         {
             db = _db;
         }
@@ -21,31 +21,32 @@ namespace Rolisa.DataAccess
         {
             try
             {
-                List<VMCondition> data = (
-                    from ic in db.Conditions
-                    where ic.IsDeleted == false && ic.Name.Contains(filter ?? "")
-                    select new VMCondition
+                List<VMProductCategory> pcategory = (
+                    from pc in db.ProductCategories
+                    where pc.IsDeleted == false && pc.Name.Contains(filter ?? "")
+                    select new VMProductCategory
                     {
-                        Id = ic.Id,
-                        Name = ic.Name,
-                        CreatedBy = ic.CreatedBy,
-                        CreatedOn = ic.CreatedOn,
-                        ModifiedBy = ic.ModifiedBy,
-                        ModifiedOn = ic.ModifiedOn,
-                        DeletedBy = ic.DeletedBy,
-                        DeletedOn = ic.DeletedOn,
-                        IsDeleted = ic.IsDeleted
+                        Id = pc.Id,
+                        Name = pc.Name,
+                        CreatedBy = pc.CreatedBy,
+                        CreatedOn = pc.CreatedOn,
+                        ModifiedBy = pc.ModifiedBy,
+                        ModifiedOn = pc.ModifiedOn,
+                        DeletedBy = pc.DeletedBy,
+                        DeletedOn = pc.DeletedOn,
+                        IsDeleted = pc.IsDeleted
                     }
                 ).ToList();
                 if (filter != null)
                 {
-                    response.statusCode = (data.Count > 0) ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.NoContent;
-                    response.message = (data.Count > 0) ? $"success fetched {data.Count} data condition" : "inventory condition has no data!";
-                    response.data = data;
+                    response.statusCode = (pcategory.Count > 0) ? System.Net.HttpStatusCode.OK : System.Net.HttpStatusCode.NoContent;
+                    response.message = (pcategory.Count > 0) ? $"success fetched {pcategory.Count} data product category" : "product category has no data!";
+                    response.data = pcategory;
                 }
                 else
                 {
-                    throw new ArgumentNullException();
+                    response.statusCode = System.Net.HttpStatusCode.NoContent;
+                    response.message = "please input filter first!";
                 }
             }
             catch (Exception ex)
@@ -56,32 +57,32 @@ namespace Rolisa.DataAccess
             return response;
         }
         public VMResponse GetAll() => GetByFilter("");
-
         public VMResponse GetById(int id)
         {
             try
             {
-                VMCondition? data = (
-                    from ic in db.Conditions
-                    where ic.Id == id && ic.IsDeleted == false
-                    select new VMCondition
+                VMProductCategory? pcategory = (
+                    from pc in db.ProductCategories
+                    where pc.IsDeleted == false && pc.Id == id
+                    select new VMProductCategory
                     {
-                        Id = ic.Id,
-                        Name = ic.Name,
-                        CreatedBy = ic.CreatedBy,
-                        CreatedOn = ic.CreatedOn,
-                        ModifiedBy = ic.ModifiedBy,
-                        ModifiedOn = ic.ModifiedOn,
-                        DeletedBy = ic.DeletedBy,
-                        DeletedOn = ic.DeletedOn,
-                        IsDeleted = ic.IsDeleted
+                        Id = pc.Id,
+                        Name = pc.Name,
+                        CreatedBy = pc.CreatedBy,
+                        CreatedOn = pc.CreatedOn,
+                        ModifiedBy = pc.ModifiedBy,
+                        ModifiedOn = pc.ModifiedOn,
+                        DeletedBy = pc.DeletedBy,
+                        DeletedOn = pc.DeletedOn,
+                        IsDeleted = pc.IsDeleted
                     }
                 ).FirstOrDefault();
-                if (data != null)
+
+                if (pcategory != null)
                 {
                     response.statusCode = System.Net.HttpStatusCode.OK;
                     response.message = "success get data by id" + id;
-                    response.data = data;
+                    response.data = pcategory;
                 }
                 else
                 {
@@ -89,35 +90,35 @@ namespace Rolisa.DataAccess
                     response.message = $"data with id {id} not found";
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 response.message = ex.Message;
                 response.statusCode = System.Net.HttpStatusCode.BadRequest;
             }
             return response;
         }
-
-        public VMResponse Create(VMCondition data)
+        public VMResponse Create(VMProductCategory data)
         {
-            using (IDbContextTransaction dbTran = db.Database.BeginTransaction())
+            using(IDbContextTransaction dbTran = db.Database.BeginTransaction())
             {
                 try
                 {
-                    Condition condition = new Condition()
+                    ProductCategory pcategory = new ProductCategory()
                     {
                         Name = data.Name,
                         CreatedBy = data.CreatedBy,
+                        CreatedOn = DateTime.Now,
                         IsDeleted = false
                     };
-                    db.Add(condition);
+                    db.Add(pcategory);
                     db.SaveChanges();
                     dbTran.Commit();
 
                     response.statusCode = System.Net.HttpStatusCode.Created;
-                    response.message = "success create data inventory category";
-                    response.data = condition;
+                    response.message = "success create data product category";
+                    response.data = pcategory;
                 }
-                catch (Exception ex)
+                catch(Exception ex) 
                 {
                     dbTran.Rollback();
                     response.message = ex.Message;
@@ -126,19 +127,18 @@ namespace Rolisa.DataAccess
             }
             return response;
         }
-
-        public VMResponse Update(VMCondition data)
+        public VMResponse Update(VMProductCategory data)
         {
             using (IDbContextTransaction dbTran = db.Database.BeginTransaction())
             {
                 VMResponse response = GetById(data.Id);
                 object? dataResponse = response.data;
-                VMCondition existingData = (VMCondition)dataResponse;
+                VMProductCategory existingData = (VMProductCategory)dataResponse;
                 try
                 {
                     if (existingData != null)
                     {
-                        Condition condition = new Condition()
+                        ProductCategory pcategory = new ProductCategory()
                         {
                             Id = existingData.Id,
                             Name = data.Name,
@@ -148,19 +148,20 @@ namespace Rolisa.DataAccess
                             ModifiedOn = DateTime.Now,
                             IsDeleted = false
                         };
-                        db.Update(condition);
+                        db.Update(pcategory);
                         db.SaveChanges();
                         dbTran.Commit();
 
                         response.statusCode = System.Net.HttpStatusCode.OK;
-                        response.message = "success update data inventory condition";
-                        response.data = condition;
+                        response.message = "success update data inventory category";
+                        response.data = pcategory;
                     }
                     else
                     {
                         response.statusCode = System.Net.HttpStatusCode.NoContent;
-                        response.message = "cannot update data inventory condition, data not found";
+                        response.message = "cannot update data inventory category, data not found";
                     }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -171,19 +172,18 @@ namespace Rolisa.DataAccess
             }
             return response;
         }
-
         public VMResponse Delete(int id, int userId)
         {
             using (IDbContextTransaction dbTran = db.Database.BeginTransaction())
             {
                 VMResponse response = GetById(id);
                 object? dataResponse = response.data;
-                VMCondition existingData = (VMCondition)dataResponse;
+                VMProductCategory existingData = (VMProductCategory)dataResponse;
                 try
                 {
                     if (existingData != null)
                     {
-                        Condition condition = new Condition()
+                        ProductCategory pcategory = new ProductCategory()
                         {
                             Id = existingData.Id,
                             Name = existingData.Name,
@@ -195,19 +195,20 @@ namespace Rolisa.DataAccess
                             DeletedOn = DateTime.Now,
                             IsDeleted = true
                         };
-                        db.Update(condition);
+                        db.Update(pcategory);
                         db.SaveChanges();
                         dbTran.Commit();
 
                         response.statusCode = System.Net.HttpStatusCode.OK;
-                        response.message = "success delete data inventory condition";
-                        response.data = condition;
+                        response.message = "success delete data product category";
+                        response.data = pcategory;
                     }
                     else
                     {
                         response.statusCode = System.Net.HttpStatusCode.NoContent;
-                        response.message = "cannot delete data inventory condition, data not found";
+                        response.message = "cannot delete data product category, data not found";
                     }
+                    
                 }
                 catch (Exception ex)
                 {
