@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net" Version="0.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Rolisa.DataModel\Rolisa.DataModel.csproj" />
     <ProjectReference Include="..\Rolisa.ViewModel\Rolisa.ViewModel.csproj" />
   </ItemGroup>

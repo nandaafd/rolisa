@@ -20,5 +20,7 @@ namespace Rolisa.ViewModel
         public int? DeletedBy { get; set; }
         public DateTime? DeletedOn { get; set; }
         public bool? IsDeleted { get; set; }
+        public VMBiodatum? biodatum { get; set; }
+        public VMUser? user { get; set; }
     }
 }
