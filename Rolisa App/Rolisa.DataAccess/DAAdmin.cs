@@ -222,7 +222,7 @@ namespace Rolisa.DataAccess
                     VMAdmin? existingData = (VMAdmin)dataResponse;
                     if (existingData != null)
                     {
-                        if (BCrypt.Net.BCrypt.Verify(data.user.ConfirmPassword, existingData.user.Password))
+                        if (BCrypt.Net.BCrypt.Verify(data.user.OldPassword, existingData.user.Password))
                         {
                             User user = new User();
                             user.Id = existingData.user.Id;
@@ -242,6 +242,9 @@ namespace Rolisa.DataAccess
 
                             db.Update(user);
                             db.SaveChanges();
+
+
+
                             dbTran.Commit();
                             response.message = "success change admin password";
                             response.statusCode = System.Net.HttpStatusCode.OK;

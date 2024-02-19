@@ -18,7 +18,5 @@ namespace Rolisa.API.Controllers
         public VMResponse Add(VMAdmin data) => admin.Create(data);
         [HttpPut]
         public VMResponse Edit(VMAdmin data) => admin.Update(data);
-        [HttpPut("[action]")]
-        public VMResponse ChangePassword(VMAdmin data) => admin.ChangePassword(data);
     }
 }

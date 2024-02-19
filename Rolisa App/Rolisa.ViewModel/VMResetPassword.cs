@@ -11,6 +11,7 @@ namespace Rolisa.ViewModel
     public class VMResetPassword
     {
         public int Id { get; set; }
+        public string? Email {  get; set; }
         public string? OldPassword { get; set; }
         public string? NewPassword { get; set; }
         public string? UsedFor { get; set; }

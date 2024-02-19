@@ -12,6 +12,10 @@ namespace Rolisa.DataModel
         [Key]
         [Column("id")]
         public int Id { get; set; }
+        [Column("email")]
+        [StringLength(255)]
+        [Unicode(false)]
+        public string? Email { get; set; }
         [Column("old_password")]
         [StringLength(255)]
         [Unicode(false)]
