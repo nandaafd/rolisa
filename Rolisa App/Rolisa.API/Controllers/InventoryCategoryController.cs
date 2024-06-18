@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Rolisa.API.Service;
 using Rolisa.DataAccess;
 using Rolisa.DataModel;
 using Rolisa.ViewModel;
@@ -10,11 +11,11 @@ namespace Rolisa.API.Controllers
     [ApiController]
     public class InventoryCategoryController : ControllerBase
     {
-        private DAInventoryCategory? inventoryCategory;
+        private InventoryCategoryService? inventoryCategory;
 
-        public InventoryCategoryController(RolisaContext _db) 
+        public InventoryCategoryController(InventoryCategoryService _inventoryCategory) 
         {
-            inventoryCategory = new DAInventoryCategory(_db);
+            inventoryCategory = _inventoryCategory;
         }
         [HttpGet]
         public VMResponse GetAll() => inventoryCategory.GetAll();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Rolisa.API.Service;
 using Rolisa.DataAccess;
 using Rolisa.DataModel;
 using Rolisa.ViewModel;
@@ -10,8 +11,8 @@ namespace Rolisa.API.Controllers
     [ApiController]
     public class RoleController : ControllerBase
     {
-        private DARole role;
-        public RoleController(RolisaContext db) { role = new DARole(db); }
+        private RoleService role;
+        public RoleController(RoleService _role) { role = _role; }
         [HttpGet("[action]/{filter?}")]
         public VMResponse? GetByFilter(string filter) => role.GetByFilter(filter);
         [HttpGet]

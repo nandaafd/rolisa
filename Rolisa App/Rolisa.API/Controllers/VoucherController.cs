@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Rolisa.API.Service;
 using Rolisa.DataAccess;
 using Rolisa.DataModel;
 using Rolisa.ViewModel;
@@ -10,8 +11,8 @@ namespace Rolisa.API.Controllers
     [ApiController]
     public class VoucherController : ControllerBase
     {
-        private DAVoucher voucher;
-        public VoucherController(RolisaContext _db) { voucher = new DAVoucher(_db); }
+        private VoucherService voucher;
+        public VoucherController(VoucherService _voucher) { voucher = _voucher; }
         [HttpGet]
         public VMResponse GetALl() => voucher.GetAll();
         [HttpGet("[action]/{filter?}")]

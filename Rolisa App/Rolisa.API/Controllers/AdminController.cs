@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Rolisa.API.Service;
 using Rolisa.DataAccess;
 using Rolisa.DataModel;
 using Rolisa.ViewModel;
@@ -10,8 +11,10 @@ namespace Rolisa.API.Controllers
     [ApiController]
     public class AdminController : ControllerBase
     {
-        private DAAdmin admin;
-        public AdminController(RolisaContext _db) { admin = new DAAdmin(_db); }
+        private AdminService admin;
+        public AdminController(AdminService _admin) { admin = _admin; }
+        [HttpGet]
+        public VMResponse GetAll() => admin.GetAll();
         [HttpGet("[action]/{id?}")]
         public VMResponse GetById(int id) => admin.GetById(id);
         [HttpPost]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Rolisa.API.Service;
 using Rolisa.DataAccess;
 using Rolisa.DataModel;
 using Rolisa.ViewModel;
@@ -10,8 +11,8 @@ namespace Rolisa.API.Controllers
     [ApiController]
     public class ConditionController : ControllerBase
     {
-        private DACondition condition;
-        public ConditionController(RolisaContext _db) { condition = new DACondition(_db); }
+        private ConditionService condition;
+        public ConditionController(ConditionService _condition) { condition = _condition; }
         [HttpGet]
         public VMResponse GetALl() => condition.GetAll();
         [HttpGet("[action]/{filter?}")]

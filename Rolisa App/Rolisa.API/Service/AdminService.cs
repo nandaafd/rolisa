@@ -1,20 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 using Rolisa.DataModel;
 using Rolisa.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Rolisa.DataAccess
+namespace Rolisa.API.Service
 {
-    public class DAAdmin
+    public class AdminService
     {
         private VMResponse response = new VMResponse();
         private RolisaContext db;
-        public DAAdmin(RolisaContext _db) { db = _db; }
+        public AdminService(RolisaContext _db) { db = _db; }
 
         public VMResponse GetAll()
         {
@@ -50,14 +44,14 @@ namespace Rolisa.DataAccess
                     throw new ArgumentNullException("no data");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 response.message = ex.Message;
                 response.statusCode = System.Net.HttpStatusCode.BadRequest;
             }
             return response;
         }
-        public VMResponse GetById(int id) 
+        public VMResponse GetById(int id)
         {
             try
             {
@@ -147,16 +141,16 @@ namespace Rolisa.DataAccess
                     response.data = admin;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 response.message = ex.Message;
                 response.statusCode = System.Net.HttpStatusCode.BadRequest;
             }
-            return response; 
+            return response;
         }
         public VMResponse Create(VMAdmin data)
         {
-            using(IDbContextTransaction dbTran = db.Database.BeginTransaction())
+            using (IDbContextTransaction dbTran = db.Database.BeginTransaction())
             {
                 try
                 {
@@ -179,7 +173,7 @@ namespace Rolisa.DataAccess
                         user.BiodataId = biodatum.Id;
                         user.IsBlocked = false;
                         user.CreatedBy = data.CreatedBy;
-                        db.Add(user); 
+                        db.Add(user);
                         db.SaveChanges();
 
                         admin.UserId = user.Id;
@@ -197,7 +191,8 @@ namespace Rolisa.DataAccess
                     response.statusCode = System.Net.HttpStatusCode.Created;
                     response.data = data;
                 }
-                catch(Exception ex) {
+                catch (Exception ex)
+                {
                     dbTran.Rollback();
                     response.message = ex.Message;
                     response.statusCode = System.Net.HttpStatusCode.BadRequest;
@@ -207,7 +202,7 @@ namespace Rolisa.DataAccess
         }
         public VMResponse Update(VMAdmin data)
         {
-            using(IDbContextTransaction dbTran = db.Database.BeginTransaction())
+            using (IDbContextTransaction dbTran = db.Database.BeginTransaction())
             {
                 try
                 {
@@ -244,7 +239,7 @@ namespace Rolisa.DataAccess
                     response.data = data;
                     dbTran.Commit();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     dbTran.Rollback();
                     response.message = ex.Message;

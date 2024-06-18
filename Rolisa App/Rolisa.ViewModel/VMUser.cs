@@ -15,6 +15,7 @@ namespace Rolisa.ViewModel
         public int? RoleId { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
+        public string? NewPassword { get; set; }
         public string? OldPassword {  get; set; }
         public int? LoginAttempt { get; set; }
         public bool? IsBlocked { get; set; }

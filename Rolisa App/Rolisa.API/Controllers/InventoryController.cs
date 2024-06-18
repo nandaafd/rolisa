@@ -1,18 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Rolisa.API.Service;
 using Rolisa.DataAccess;
 using Rolisa.DataModel;
 using Rolisa.ViewModel;
 
 namespace Rolisa.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class InventoryController : Controller
     {
-        private DAInventory? inventory;
-        public InventoryController(RolisaContext _db) 
+        private InventoryService? inventory;
+        public InventoryController(InventoryService _inventory) 
         {
-            inventory = new DAInventory(_db);
+            inventory = _inventory;
         }
         [HttpGet("[action]/{filter?}")]
         public VMResponse? GetByFilter(string filter) => inventory.GetByFilter(filter);

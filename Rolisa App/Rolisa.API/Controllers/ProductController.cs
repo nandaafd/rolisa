@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Rolisa.API.Service;
 using Rolisa.DataAccess;
 using Rolisa.DataModel;
 using Rolisa.ViewModel;
@@ -11,10 +12,10 @@ namespace Rolisa.API.Controllers
     public class ProductController : ControllerBase
     {
         private VMResponse response = new VMResponse();
-        private DAProduct product;
-        public ProductController(RolisaContext db)
+        private ProductService product;
+        public ProductController(ProductService _product)
         {
-            product = new DAProduct(db);
+            product = _product;
         }
         [HttpGet("[action]/{filter?}")]
         public VMResponse GetByFilter(string filter) => product.GetByFilter(filter);

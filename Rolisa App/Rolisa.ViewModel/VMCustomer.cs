@@ -11,6 +11,13 @@ namespace Rolisa.ViewModel
     {
         public int Id { get; set; }
         public int? UserId { get; set; }
+        public string? CustomerFullname { get; set; }
+        public string? CustomerNickname {  get; set; }
+        public string? CustomerPhone {  get; set; }
+        public string? AddressLabel { get; set; }
+        public string? FullAddress {  get; set; }
+        public string? CustomerPostalCode {  get; set; }
+        public bool? AddressIsMain { get; set; }
         public int? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public int? ModifiedBy { get; set; }

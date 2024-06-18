@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Rolisa.API.Service;
 using Rolisa.DataAccess;
 using Rolisa.DataModel;
 using Rolisa.ViewModel;
@@ -10,11 +11,11 @@ namespace Rolisa.API.Controllers
     [ApiController]
     public class ProductCategoryController : ControllerBase
     {
-        private DAProductCategory? productCategory;
+        private ProductCategoryService? productCategory;
 
-        public ProductCategoryController(RolisaContext _db)
+        public ProductCategoryController(ProductCategoryService _productCategory)
         {
-            productCategory = new DAProductCategory(_db);
+            productCategory = _productCategory;
         }
         [HttpGet]
         public VMResponse GetAll() => productCategory.GetAll();

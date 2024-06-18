@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Rolisa.API.Service;
 using Rolisa.DataAccess;
 using Rolisa.DataModel;
 using Rolisa.ViewModel;
@@ -10,8 +11,8 @@ namespace Rolisa.API.Controllers
     [ApiController]
     public class FavoriteController : ControllerBase
     {
-        private DAFavorite favorite;
-        public FavoriteController(RolisaContext _db) { favorite = new DAFavorite(_db); }
+        private FavoriteService favorite;
+        public FavoriteController(FavoriteService _favorite) { favorite = _favorite; }
         [HttpGet]
         public VMResponse GetALl() => favorite.GetAll();
         [HttpGet("[action]/{filter?}")]
